@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Promo } from '../types';
 import { Sparkles, ChevronLeft, ChevronRight, Gift, Copy, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
@@ -9,7 +9,24 @@ interface PromoTickerProps {
 }
 
 export default function PromoTicker({ promos, onApplyPromo }: PromoTickerProps) {
-  const activePromos = promos.filter(p => p.active);
+  const activePromos = useMemo(() => {
+    const list = [...promos.filter(p => p.active)];
+    const hasBirthdayPromo = list.some(p => p.code === 'HUTPOS20');
+    
+    if (!hasBirthdayPromo) {
+      list.push({
+        id: 'hut_pos_20',
+        code: 'HUTPOS20',
+        title: 'PROMO ULANG TAHUN POS',
+        description: 'Potongan spesial 20% bagi pelanggan terdaftar di sistem!',
+        discountPercent: 20,
+        minPurchase: 0,
+        active: true
+      });
+    }
+    return list;
+  }, [promos]);
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
 
@@ -23,7 +40,7 @@ export default function PromoTicker({ promos, onApplyPromo }: PromoTickerProps) 
 
   if (activePromos.length === 0) return null;
 
-  const currentPromo = activePromos[currentIndex];
+  const currentPromo = activePromos[currentIndex] || activePromos[0];
 
   const handleCopy = (code: string, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -41,15 +58,15 @@ export default function PromoTicker({ promos, onApplyPromo }: PromoTickerProps) 
   };
 
   return (
-    <div id="promo-ticker-container" className="bg-indigo-50 border-y border-indigo-100 text-indigo-950 py-2.5 px-4 flex items-center justify-between relative overflow-hidden text-sm shadow-xs">
+    <div id="promo-ticker-container" className="bg-[#FAF6F0] border-y border-[#F2EAE0] text-slate-900 py-3 px-4 flex items-center justify-between relative overflow-hidden text-sm shadow-2xs">
       {/* Visual background sparkle */}
-      <div className="absolute right-0 top-0 bottom-0 flex items-center pr-8 opacity-5 pointer-events-none text-indigo-900">
-        <Gift size={100} />
+      <div className="absolute right-0 top-0 bottom-0 flex items-center pr-8 opacity-5 pointer-events-none text-[#E51B24]">
+        <Gift size={80} />
       </div>
 
       <div className="flex items-center gap-3 w-full max-w-7xl mx-auto z-10">
-        <span className="flex items-center gap-1.5 bg-indigo-600 text-white font-bold text-xs px-2 py-1 rounded-full uppercase tracking-wider shrink-0 animate-pulse">
-          <Sparkles size={13} />
+        <span className="flex items-center gap-1.5 bg-[#E51B24] text-white font-extrabold text-[10px] px-2.5 py-1 rounded-full uppercase tracking-wider shrink-0 animate-pulse">
+          <Sparkles size={11} />
           PROMO AKTIF
         </span>
 
@@ -62,15 +79,15 @@ export default function PromoTicker({ promos, onApplyPromo }: PromoTickerProps) 
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: -20, opacity: 0 }}
               transition={{ duration: 0.4 }}
-              className="flex items-center flex-wrap gap-2 md:gap-4 text-xs md:text-sm"
+              className="flex items-center flex-wrap gap-2 md:gap-4 text-xs font-semibold"
             >
-              <strong className="font-semibold text-indigo-900">{currentPromo.title}:</strong>
-              <span className="text-slate-700">{currentPromo.description}</span>
+              <strong className="font-extrabold text-[#E51B24]">{currentPromo.title}:</strong>
+              <span className="text-slate-600">{currentPromo.description}</span>
               
               <div className="flex items-center gap-1.5 ml-2">
                 <button
                   onClick={(e) => handleCopy(currentPromo.code, e)}
-                  className="inline-flex items-center gap-1 bg-white hover:bg-indigo-100/50 border border-indigo-200 text-indigo-900 px-2 py-0.5 rounded text-xs font-mono transition-colors active:scale-95 cursor-pointer"
+                  className="inline-flex items-center gap-1 bg-white hover:bg-slate-50 border border-slate-200 text-slate-800 px-2 py-0.5 rounded text-xs font-mono transition-colors active:scale-95 cursor-pointer"
                   title="Salin kode promo"
                 >
                   {copiedCode === currentPromo.code ? (
@@ -88,7 +105,7 @@ export default function PromoTicker({ promos, onApplyPromo }: PromoTickerProps) 
 
                 <button
                   onClick={() => onApplyPromo(currentPromo.code)}
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white px-2.5 py-0.5 rounded text-xs font-medium transition-colors active:scale-95 cursor-pointer"
+                  className="bg-[#E51B24] hover:bg-red-700 text-white px-2.5 py-0.5 rounded text-xs font-extrabold transition-colors active:scale-95 cursor-pointer"
                 >
                   Gunakan
                 </button>
@@ -99,20 +116,20 @@ export default function PromoTicker({ promos, onApplyPromo }: PromoTickerProps) 
 
         {/* Carousel controls */}
         {activePromos.length > 1 && (
-          <div className="flex items-center gap-1 shrink-0 ml-4">
+          <div className="flex items-center gap-1.5 shrink-0 ml-4">
             <button
               onClick={handlePrev}
-              className="p-1 rounded-full hover:bg-indigo-100 text-indigo-800 transition-colors cursor-pointer"
+              className="p-1 rounded-full hover:bg-slate-100 text-slate-700 transition-colors cursor-pointer"
               aria-label="Promo sebelumnya"
             >
               <ChevronLeft size={16} />
             </button>
-            <span className="text-xs text-indigo-700 font-mono">
+            <span className="text-xs text-slate-600 font-mono font-bold">
               {currentIndex + 1}/{activePromos.length}
             </span>
             <button
               onClick={handleNext}
-              className="p-1 rounded-full hover:bg-indigo-100 text-indigo-800 transition-colors cursor-pointer"
+              className="p-1 rounded-full hover:bg-slate-100 text-slate-700 transition-colors cursor-pointer"
               aria-label="Promo selanjutnya"
             >
               <ChevronRight size={16} />

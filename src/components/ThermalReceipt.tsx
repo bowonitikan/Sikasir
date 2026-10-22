@@ -215,6 +215,12 @@ export default function ThermalReceipt({
                       <span>Metode:</span>
                       <span className="font-bold uppercase text-slate-900">{order.paymentMethod}</span>
                     </div>
+                    {order.referenceNumber && (
+                      <div className="flex justify-between text-indigo-700">
+                        <span>Ref/No. Kartu:</span>
+                        <span className="font-semibold text-right max-w-[150px] truncate">{order.referenceNumber}</span>
+                      </div>
+                    )}
                     {order.isOffline && (
                       <div className="flex justify-between text-rose-600 font-semibold uppercase text-[8px]">
                         <span>Mode:</span>

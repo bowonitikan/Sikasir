@@ -46,6 +46,7 @@ export interface Order {
   isOffline?: boolean;
   cashReceived?: number;
   changeAmount?: number;
+  referenceNumber?: string;
 }
 
 export interface User {
