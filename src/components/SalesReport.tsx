@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { Order, Product, Category, User } from '../types';
 import { formatIDR, exportToCSV } from '../utils';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-import { TrendingUp, FileSpreadsheet, Printer, Award, Calendar, DollarSign, ShoppingBag, CreditCard, RefreshCw, Shield, CheckCircle2, AlertTriangle, AlertCircle, Coins, ChevronRight, User as UserIcon, Check, Copy, HelpCircle, FileText } from 'lucide-react';
+import { TrendingUp, FileSpreadsheet, Printer, Award, Calendar, DollarSign, ShoppingBag, CreditCard, RefreshCw, Shield, CheckCircle2, AlertTriangle, AlertCircle, Coins, ChevronRight, User as UserIcon, Check, Copy, HelpCircle, FileText, Download } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
@@ -800,9 +800,10 @@ export default function SalesReport({ orders, products, currentUser }: SalesRepo
             <button
               onClick={handleExportPDFAdmin}
               className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl text-xs px-3.5 py-2 flex items-center gap-1.5 shadow-xs cursor-pointer transition-colors"
+              title="Unduh Laporan Keuangan dalam format PDF"
             >
-              <FileText size={14} />
-              <span>Ekspor PDF</span>
+              <Download size={14} />
+              <span>Unduh PDF Laporan</span>
             </button>
 
             <button
@@ -1205,10 +1206,11 @@ export default function SalesReport({ orders, products, currentUser }: SalesRepo
         <div className="flex flex-wrap items-center gap-2 shrink-0 relative z-10">
           <button
             onClick={handleExportPDFCashier}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 border border-indigo-500 cursor-pointer shadow-sm"
+            className="bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 border border-indigo-500 cursor-pointer shadow-sm hover:shadow-md"
+            title="Unduh Laporan Shift dalam format dokumen PDF"
           >
-            <FileText size={14} />
-            <span>Ekspor PDF Shift</span>
+            <Download size={15} />
+            <span>Unduh PDF Laporan</span>
           </button>
 
           <button
@@ -1517,12 +1519,21 @@ export default function SalesReport({ orders, products, currentUser }: SalesRepo
                   <div>✓ Selisih Kas: <span className={`font-bold ${cashDiscrepancy === 0 ? 'text-emerald-600' : 'text-rose-600'}`}>{formatIDR(cashDiscrepancy)}</span></div>
                 </div>
 
-                <button
-                  onClick={handleResetForm}
-                  className="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs py-2.5 rounded-xl transition-all cursor-pointer"
-                >
-                  Buat Laporan Baru / Edit Laporan
-                </button>
+                <div className="flex gap-2 pt-1">
+                  <button
+                    onClick={handleExportPDFCashier}
+                    className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs py-2.5 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
+                  >
+                    <Download size={14} />
+                    <span>Unduh PDF Laporan</span>
+                  </button>
+                  <button
+                    onClick={handleResetForm}
+                    className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs py-2.5 rounded-xl transition-all cursor-pointer"
+                  >
+                    Laporan Baru
+                  </button>
+                </div>
               </div>
             ) : (
               // Input Form fields
@@ -1720,13 +1731,22 @@ export default function SalesReport({ orders, products, currentUser }: SalesRepo
               </div>
             </div>
 
-            <button
-              onClick={() => window.print()}
-              className="w-full bg-amber-200 hover:bg-amber-300 text-amber-950 font-extrabold text-xs py-2.5 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer"
-            >
-              <Printer size={13} />
-              <span>Cetak Struk Ke Printer Thermal</span>
-            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={handleExportPDFCashier}
+                className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs py-2.5 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
+              >
+                <Download size={13} />
+                <span>Unduh PDF</span>
+              </button>
+              <button
+                onClick={() => window.print()}
+                className="flex-1 bg-amber-200 hover:bg-amber-300 text-amber-950 font-extrabold text-xs py-2.5 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+              >
+                <Printer size={13} />
+                <span>Cetak Thermal</span>
+              </button>
+            </div>
           </div>
 
           {/* History of Shift Report Logs (Local Session Database) */}
